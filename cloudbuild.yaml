@@ -16,7 +16,7 @@ steps:
   id: Push
   args:
   - 'push'
-  - 'gcr.io/$PROJECT_ID/test_cha:2'
+  - 'gcr.io/$PROJECT_ID/test_cha:3'
 # [END cloudbuild]
 
  - name: 'gcr.io/cloud-builders/kubectl'
