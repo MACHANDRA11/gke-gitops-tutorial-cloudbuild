@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
       - name: hello-cloudbuild
-        image: gcr.io/$PROJECT_ID/test_cha:5
+        image: gcr.io/devtools-317213/test_cha:5
         ports:
         - containerPort: 8080
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: hello-cloudbuild
+  name: hello-devtools
 spec:
   selector:
     app: hello-cloudbuild
