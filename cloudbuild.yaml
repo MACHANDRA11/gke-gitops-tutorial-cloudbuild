@@ -17,14 +17,14 @@ steps:
   args:
   - 'push'
   - 'gcr.io/$PROJECT_ID/test_cha:3'
-# [END cloudbuild]
+   # [END cloudbuild]
 
- - name: 'gcr.io/cloud-builders/kubectl'
-   id: Deploy
-   args:
-   - 'apply'
-   - '-f'
-   - 'kubernetes.yaml'
-   env:
-   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-   - 'CLOUDSDK_CONTAINER_CLUSTER=test-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: Deploy
+  args:
+  - 'apply'
+  - '-f'
+  - 'kubernetes.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=test-cluster'
