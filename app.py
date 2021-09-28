@@ -12,14 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START hello-app]
-from flask import Flask
-app = Flask('hello-cloudbuild')
+from flask import Flask, request
 
-@app.route('/')
+app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
 def hello():
-  return "Hello World!\n"
+    """ Return a friendly HTTP greeting. """
+    who = request.args.get("who", "World")
+    return f"Hello {who}!\n"
 
-if __name__ == '__main__':
-  app.run(host = '0.0.0.0', port = 8080)
-# [END hello-app]
+
+if __name__ == "__main__":
+    # Used when running locally only. When deploying to Cloud Run,
+    # a webserver process such as Gunicorn will serve the app.
+    app.run(host="localhost", port=8080, debug=True)
