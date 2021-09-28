@@ -6,7 +6,7 @@ steps:
   args:
   - 'build'
   - '-t'
-  - 'gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/test_cha:8'
   - '.'
 
 # This step pushes the image to Container Registry
@@ -16,32 +16,51 @@ steps:
   id: Push
   args:
   - 'push'
-  - 'gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/test_cha:8'
 
-images: ['gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA']
+images: ['gcr.io/$PROJECT_ID/test_cha:8']
 
-- name: 'gcr.io/cloud-builders/gke-deploy'
-  id: 'Apply deploy'
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: Deploy
   args:
   - 'apply'
-  - '--filename=$_OUTPUT_BUCKET_PATH/expanded/*'
-  - '--namespace=$_K8S_NAMESPACE'
-  - '--cluster=$_GKE_CLUSTER'
-  - '--location=$_GKE_LOCATION'
-images:
-- '$_IMAGE_NAME:$_IMAGE_VERSION'
-substitutions:
-  _DOCKERFILE_PATH: Dockerfile
-  _IMAGE_NAME:
-  _IMAGE_VERSION:
-  _GKE_CLUSTER:
-  _GKE_LOCATION:
-  _K8S_YAML_PATH:
-  _K8S_APP_NAME:
-  _K8S_NAMESPACE:
-  _OUTPUT_BUCKET_PATH:
-options:
-  substitution_option: 'ALLOW_LOOSE'
+  - '-f'
+  - 'kubernetes.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=test-cluster'
+
+
+# - name: "gcr.io/cloud-builders/gke-deploy"
+#   args:
+#   - run
+#   - --filename=kubernetes-resource-file
+#   - --image=gcr.io/project-id/image:tag
+#   - --location=location
+#   - --cluster=cluster
+
+# - name: 'gcr.io/cloud-builders/gke-deploy'
+#   id: 'Apply deploy'
+#   args:
+#   - 'apply'
+#   - '--filename=$_OUTPUT_BUCKET_PATH/expanded/*'
+#   - '--namespace=$_K8S_NAMESPACE'
+#   - '--cluster=$_GKE_CLUSTER'
+#   - '--location=$_GKE_LOCATION'
+# images:
+# - '$_IMAGE_NAME:$_IMAGE_VERSION'
+# substitutions:
+#   _DOCKERFILE_PATH: Dockerfile
+#   _IMAGE_NAME:
+#   _IMAGE_VERSION:
+#   _GKE_CLUSTER:
+#   _GKE_LOCATION:
+#   _K8S_YAML_PATH:
+#   _K8S_APP_NAME:
+#   _K8S_NAMESPACE:
+#   _OUTPUT_BUCKET_PATH:
+# options:
+#   substitution_option: 'ALLOW_LOOSE'
 
 # - name: 'gcr.io/cloud-builders/kubectl'
 #   id: Deploy
@@ -52,3 +71,30 @@ options:
 #   env:
 #   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
 #   - 'CLOUDSDK_CONTAINER_CLUSTER=test-cluster'
+
+# substitutions:
+#     _CLOUDSDK_COMPUTE_ZONE: us-central1-a 
+#     _CLOUDSDK_CONTAINER_CLUSTER: $_CLOUDSDK_CONTAINER_CLUSTER
+# steps:
+# - name: gcr.io/$PROJECT_ID/sonar-scanner:latest
+#   args:
+#     - '-Dsonar.host.url=https://sonar.test.io'
+#     - '-Dsonar.login=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+#     - '-Dsonar.projectKey=test-service'
+#     - '-Dsonar.sources=.'
+# - id: 'build test-service image'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: ['build', '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME/$BRANCH_NAME:$SHORT_SHA', '.']
+# - id: 'push test-service image'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: ['push', 'gcr.io/$PROJECT_ID/$REPO_NAME/$BRANCH_NAME:$SHORT_SHA']
+# - id: 'set test-service image in yamls'
+#   name: 'ubuntu'
+#   args: ['bash','-c','sed -i "s,TEST_SERVICE,gcr.io/$PROJECT_ID/$REPO_NAME/$BRANCH_NAME:$SHORT_SHA," k8s/*.yaml']
+# - id: kubectl-apply
+#   name: 'gcr.io/cloud-builders/kubectl'
+#   args: ['apply', '-f', 'k8s/']
+#   env:
+#   - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+#   - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+# images: ['gcr.io/$PROJECT_ID/$REPO_NAME/$BRANCH_NAME:$SHORT_SHA']

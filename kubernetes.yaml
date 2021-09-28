@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hello-test-11
-        image: gcr.io/devtools-317213/test_cha:7
+        image: gcr.io/devtools-317213/test_cha:8
         ports:
         - containerPort: 8080
 ---
