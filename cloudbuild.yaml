@@ -17,8 +17,31 @@ steps:
   args:
   - 'push'
   - 'gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA'
-  
+
 images: ['gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA']
+
+- name: 'gcr.io/cloud-builders/gke-deploy'
+  id: 'Apply deploy'
+  args:
+  - 'apply'
+  - '--filename=$_OUTPUT_BUCKET_PATH/expanded/*'
+  - '--namespace=$_K8S_NAMESPACE'
+  - '--cluster=$_GKE_CLUSTER'
+  - '--location=$_GKE_LOCATION'
+images:
+- '$_IMAGE_NAME:$_IMAGE_VERSION'
+substitutions:
+  _DOCKERFILE_PATH: Dockerfile
+  _IMAGE_NAME:
+  _IMAGE_VERSION:
+  _GKE_CLUSTER:
+  _GKE_LOCATION:
+  _K8S_YAML_PATH:
+  _K8S_APP_NAME:
+  _K8S_NAMESPACE:
+  _OUTPUT_BUCKET_PATH:
+options:
+  substitution_option: 'ALLOW_LOOSE'
 
 # - name: 'gcr.io/cloud-builders/kubectl'
 #   id: Deploy
