@@ -8,7 +8,7 @@ steps:
   - '-t'
   - 'gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA'
   - '.'
-images: ['gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA']
+
 # This step pushes the image to Container Registry
 # The PROJECT_ID and SHORT_SHA variables are automatically
 # replaced by Cloud Build.
@@ -17,7 +17,8 @@ images: ['gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA']
   args:
   - 'push'
   - 'gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA'
-
+  
+images: ['gcr.io/$PROJECT_ID/test_cha:$SHORT_SHA']
 
 # - name: 'gcr.io/cloud-builders/kubectl'
 #   id: Deploy
